@@ -7,7 +7,7 @@ export const authApi = {
     return response.data;
   },
   getMe: async () => {
-    const response = await api.get("user");
+    const response = await api.get("/users");
     return response.data;
   },
 };

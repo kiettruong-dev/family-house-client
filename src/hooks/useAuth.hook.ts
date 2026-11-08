@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import Cookies from "js-cookie";
 import { authKeys, authQueries } from "../queries/auth.queries";
 import { authApi } from "../apis/auth.api";
@@ -10,18 +9,16 @@ import { message } from "antd";
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [accessToken, setAccessToken] = useState(Cookies.get("at") || null);
 
   const { data: user, isLoading: isInitializing } = useQuery(
-    authQueries.user(accessToken),
+    authQueries.user(),
   );
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginCredentials) => authApi.login(credentials),
     onSuccess: (data) => {
+      queryClient.setQueryData(authKeys.user(), data);
       navigate("/");
-
-      queryClient.setQueryData(authKeys.user(), data.user);
       message.success("Đăng nhập thành công");
     },
     onError: (error) => {
